@@ -83,16 +83,21 @@ function routerFactory($$rootRouter, $rootScope, $location, $$grammar, $controll
     $$grammar.config(name, config);
   });
 
+  var navigating = false
   $rootScope.$watch(function () {
     return $location.path();
   }, function (newUrl) {
-    $$rootRouter.navigate(newUrl);
+    if(!navigating) {
+      $$rootRouter.navigate(newUrl);
+    }
+    navigating = false
   });
 
   var nav = $$rootRouter.navigate;
   $$rootRouter.navigate = function (url) {
     return nav.call(this, url).then(function (newUrl) {
       if (newUrl) {
+        navigating = true
         $location.path(newUrl);
       }
     });
@@ -684,11 +689,10 @@ var Router = function Router(grammar, pipeline, parent, name) {
       this._startNavigating();
       instruction.router = this;
       return this.pipeline.process(instruction).then((function() {
-        return $__0._finishNavigating();
-      }), (function() {
-        return $__0._finishNavigating();
-      })).then((function() {
+        $__0._finishNavigating();
         return instruction.canonicalUrl;
+      })).catch((function() {
+        return $__0._finishNavigating();
       }));
     },
     _startNavigating: function() {

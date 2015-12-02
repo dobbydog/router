@@ -83,8 +83,11 @@ class Router {
 
     instruction.router = this;
     return this.pipeline.process(instruction)
-        .then(() => this._finishNavigating(), () => this._finishNavigating())
-        .then(() => instruction.canonicalUrl);
+        .then(() => {
+          this._finishNavigating()
+          return instruction.canonicalUrl
+        })
+        .catch(() => this._finishNavigating());
   }
 
   _startNavigating() {

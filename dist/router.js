@@ -49,11 +49,10 @@ define(["assert", './grammar', './pipeline'], function($__0,$__2,$__4) {
       this._startNavigating();
       instruction.router = this;
       return this.pipeline.process(instruction).then((function() {
-        return $__6._finishNavigating();
-      }), (function() {
-        return $__6._finishNavigating();
-      })).then((function() {
+        $__6._finishNavigating();
         return instruction.canonicalUrl;
+      })).catch((function() {
+        return $__6._finishNavigating();
       }));
     },
     _startNavigating: function() {
